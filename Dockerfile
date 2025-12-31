@@ -1,4 +1,3 @@
-# CUDA 12.1 runtime base image
 FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 
 WORKDIR /app
