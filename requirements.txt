@@ -4,7 +4,7 @@ uvicorn[standard]==0.23.1
 --extra-index-url https://download.pytorch.org/whl/cu121
 torch==2.2.0+cu121
 
-diffusers==1.22.1
+diffusers==0.27.2
 transformers==4.43.0
 accelerate==0.24.0
 pillow==10.0.0
