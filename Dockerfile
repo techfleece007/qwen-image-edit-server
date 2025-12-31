@@ -1,24 +1,19 @@
-﻿FROM nvidia/cuda:12.1.105-runtime-ubuntu22.04
+# CUDA 12.1 runtime base image
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 
-# Set working directory
 WORKDIR /app
 
-# Install Python and system dependencies
 RUN apt-get update && \
     apt-get install -y python3 python3-pip git libglib2.0-0 libgl1 && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python deps
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY app.py .
 
-# Expose FastAPI port
 EXPOSE 8000
 
-# Run with Uvicorn
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
