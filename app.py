@@ -13,7 +13,7 @@ pipe = QwenImageEditPipeline.from_pretrained(
     "Qwen/Qwen-Image-Edit",
     torch_dtype=torch.float16
 )
-pipe.to("cuda")
+pipe.to("cuda")  # GPU required
 
 @app.post("/edit")
 async def edit_image(
