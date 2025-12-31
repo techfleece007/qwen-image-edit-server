@@ -1,15 +1,22 @@
 # Qwen Image Edit Server
 
-Personal-use GPU server for Qwen Image Editing (uncensored).
+Personal-use GPU server for Qwen Image Editing.
 
 ## API
 
-POST /edit  
-Content-Type: multipart/form-data  
+**Endpoint**
 
-- prompt: string  
-- image: file (PNG/JPG)  
+POST `/edit`  
+Content-Type: `multipart/form-data`
 
-Returns:  
+**Fields**
+
+- `prompt`: string  
+- `image`: file (PNG/JPG)
+
+**Response**
+
 ```json
-{"image_base64": "..."}
+{
+  "image_base64": "..."
+}
