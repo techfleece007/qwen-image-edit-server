@@ -6,7 +6,7 @@ from io import BytesIO
 import base64
 from typing import Optional
 
-# Workaround for torch.xpu AttributeError in diffusers
+# Workaround for torch.xpu AttributeError in diffuserss
 # Some versions of diffusers try to access torch.xpu which doesn't exist in standard PyTorch
 # This creates a complete mock of torch.xpu with all expected attributes
 if not hasattr(torch, 'xpu'):
