@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 # Workaround for torch.xpu AttributeError in diffusers
 # Some versions of diffusers try to access torch.xpu which doesn't exist in standard PyTorch
 # This creates a complete mock of torch.xpu with all expected attributes
+# Based on diffusers/utils/torch_utils.py which accesses: empty_cache, device_count, manual_seed
 if not hasattr(torch, 'xpu'):
     class XPUModule:
         @staticmethod
@@ -30,6 +31,23 @@ if not hasattr(torch, 'xpu'):
         def device_count():
             """Returns 0 since we don't have XPU devices"""
             return 0
+        
+        @staticmethod
+        def manual_seed(seed):
+            """No-op for XPU manual seed setting"""
+            pass
+        
+        @staticmethod
+        def manual_seed_all(seed):
+            """No-op for XPU manual seed setting"""
+            pass
+        
+        def __getattr__(self, name):
+            """Fallback for any other attributes diffusers might access"""
+            # Return a no-op function for any method calls
+            def noop(*args, **kwargs):
+                pass
+            return noop
     
     torch.xpu = XPUModule()
 
