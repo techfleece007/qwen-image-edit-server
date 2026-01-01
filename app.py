@@ -8,11 +8,24 @@ from typing import Optional
 
 # Workaround for torch.xpu AttributeError in diffusers
 # Some versions of diffusers try to access torch.xpu which doesn't exist in standard PyTorch
+# This creates a complete mock of torch.xpu with all expected attributes
 if not hasattr(torch, 'xpu'):
     class XPUModule:
         @staticmethod
         def empty_cache():
+            """No-op for XPU cache clearing"""
             pass
+        
+        @staticmethod
+        def is_available():
+            """Returns False since we don't have XPU devices"""
+            return False
+        
+        @staticmethod
+        def device_count():
+            """Returns 0 since we don't have XPU devices"""
+            return 0
+    
     torch.xpu = XPUModule()
 
 from diffusers import QwenImageEditPipeline
