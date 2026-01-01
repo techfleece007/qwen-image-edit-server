@@ -11,6 +11,18 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Workaround for torch.distributed.device_mesh (required by newer diffusers)
+# device_mesh was added in PyTorch 2.3.0, but we add a mock for older versions
+# This must be done before importing diffusers
+if not hasattr(torch.distributed, 'device_mesh'):
+    # Create a proper DeviceMesh class that diffusers expects
+    class DeviceMesh:
+        """Mock DeviceMesh for compatibility with diffusers"""
+        def __init__(self, *args, **kwargs):
+            pass
+    # Add it to torch.distributed before diffusers tries to use it
+    torch.distributed.device_mesh = DeviceMesh
+
 # Workaround for torch.xpu AttributeError in diffusers
 # Some versions of diffusers try to access torch.xpu which doesn't exist in standard PyTorch
 # This creates a complete mock of torch.xpu with all expected attributes
