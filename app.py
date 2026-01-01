@@ -8,8 +8,9 @@ app = FastAPI()
 
 pipe = DiffusionPipeline.from_pretrained(
     "Qwen/Qwen-Image-Edit",
-    torch_dtype=torch.float16,
-    trust_remote_code=True
+    custom_pipeline="qwen_image_edit",
+    trust_remote_code=True,
+    torch_dtype=torch.float16
 ).to("cuda")
 
 @app.post("/edit")
@@ -18,17 +19,16 @@ async def edit_image(
     prompt: str = Form(...)
 ):
     image_bytes = await image.read()
-    init_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
-    result = pipe(
-        prompt=prompt,
-        image=init_image
-    ).images[0]
+    with torch.no_grad():
+        result = pipe(
+            prompt=prompt,
+            image=image
+        ).images[0]
 
     buf = io.BytesIO()
     result.save(buf, format="PNG")
     buf.seek(0)
 
-    return {
-        "status": "success",
-    }
+    return buf.getvalue()
